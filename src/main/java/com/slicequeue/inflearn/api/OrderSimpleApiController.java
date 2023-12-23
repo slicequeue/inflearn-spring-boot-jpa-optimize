@@ -1,12 +1,17 @@
 package com.slicequeue.inflearn.api;
 
+import com.slicequeue.inflearn.domain.Address;
 import com.slicequeue.inflearn.domain.Order;
+import com.slicequeue.inflearn.domain.OrderStatus;
 import com.slicequeue.inflearn.repository.OrderRepository;
 import com.slicequeue.inflearn.repository.OrderSearch;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -35,6 +40,33 @@ public class OrderSimpleApiController {
         // -> 2번 1번 설정 이후에 지연로딩에 따른 잭슨 라이브러리 json 직렬화시 프록시 객체가 있어서 문제 발생
         //  -> 이 경우 스프링 부트 3.0 미만인 경우 Hibernate5Module 빈 등록 진행, 관련 gradle 추가 필요
         //  -> 스프링 부트 3.0 이상인 경우 Hibernate5JakartaModule 빈 등록 진행, 관련 gradle 추가 필요
+    }
+
+    @GetMapping("/api/v2/simple-orders")
+    public List<SimpleOrderDto> ordersV2() {
+        List<Order> orders = orderRepository.findAllByString(new OrderSearch());
+
+        List<SimpleOrderDto> result = orders.stream().map(SimpleOrderDto::new).toList();
+        // DTO 전환하여 응답!
+        return result;
+    }
+
+    @Data
+    static class SimpleOrderDto {
+        private Long orderId;
+        private String name;
+        private LocalDateTime orderDate;
+        private OrderStatus orderStatus;
+        private Address address;
+
+        public SimpleOrderDto(Order order) {
+            // 엔티티가 DTO 생성자의 파라미터로 의존하는 것은 크게 중요하지 않다.
+            orderId = order.getId();
+            name = order.getMember().getName();             // LAZY 초기화
+            orderDate = order.getOrderDate();
+            orderStatus = order.getStatus();
+            address = order.getDelivery().getAddress();     // LAZY 초기화
+        }
     }
 
 }
