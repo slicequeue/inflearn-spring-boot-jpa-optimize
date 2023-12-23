@@ -1,20 +1,10 @@
 package com.slicequeue.inflearn.exception;
 
-public class NotEnoughStockException extends RuntimeException {
+import static com.slicequeue.inflearn.exception.ExceptionConstants.ERROR_UNPROCESSABLE_ENTITY_WRONG_VALUE;
 
-    public NotEnoughStockException() {
-        super();
-    }
+public class NotEnoughStockException extends BaseUnprocessableEntityException {
 
     public NotEnoughStockException(String message) {
-        super(message);
-    }
-
-    public NotEnoughStockException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NotEnoughStockException(Throwable cause) {
-        super(cause);
+        super(ERROR_UNPROCESSABLE_ENTITY_WRONG_VALUE, message);
     }
 }
