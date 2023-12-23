@@ -13,10 +13,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
     generate-ddl: true
     properties:
       hibernate:
+        show-sql: true
         format_sql: false
 
   datasource:
@@ -38,6 +38,9 @@ spring:
 logging:
   config:
     classpath: logback.xml
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
 
 
 management:
