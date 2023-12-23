@@ -5,9 +5,9 @@ import com.slicequeue.inflearn.domain.Order;
 import com.slicequeue.inflearn.domain.OrderStatus;
 import com.slicequeue.inflearn.repository.OrderRepository;
 import com.slicequeue.inflearn.repository.OrderSearch;
+import com.slicequeue.inflearn.repository.OrderSimpleQueryDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -62,6 +62,11 @@ public class OrderSimpleApiController {
         List<SimpleOrderDto> result = orders.stream().map(SimpleOrderDto::new).toList();
         // DTO 전환하여 응답!
         return result;
+    }
+
+    @GetMapping("/api/v4/simple-orders")
+    public List<OrderSimpleQueryDto> ordersV4() {
+        return orderRepository.findOrderDtos();
     }
 
     @Data
