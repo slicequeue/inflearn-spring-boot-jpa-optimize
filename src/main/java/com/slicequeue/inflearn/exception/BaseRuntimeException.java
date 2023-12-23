@@ -13,28 +13,28 @@ public class BaseRuntimeException extends RuntimeException {
     private final Map<String, Object> detail;
     private final HttpStatus status;
 
-    protected BaseRuntimeException(HttpStatus status, String message) {
+    public BaseRuntimeException(HttpStatus status, String message) {
         this.status = status;
         this.code = null;
         this.message = message;
         this.detail = null;
     }
 
-    protected BaseRuntimeException(HttpStatus status, String message, Object[] args) {
+    public BaseRuntimeException(HttpStatus status, String message, Object[] args) {
         this.status = status;
         this.code = null;
         this.message = message;
         this.detail = null;
     }
 
-    protected BaseRuntimeException(HttpStatus status, String message, Object[] args, Map<String, Object> detail) {
+    public BaseRuntimeException(HttpStatus status, String message, Object[] args, Map<String, Object> detail) {
         this.status = status;
         this.code = null;
         this.message = message;
         this.detail = detail;
     }
 
-    protected BaseRuntimeException(HttpStatus status, Integer code, String message, Object[] args) {
+    public BaseRuntimeException(HttpStatus status, Integer code, String message, Object[] args) {
         this.status = status;
         this.code = code;
         this.message = message;
@@ -42,7 +42,7 @@ public class BaseRuntimeException extends RuntimeException {
 
     }
 
-    protected BaseRuntimeException(HttpStatus status, Integer code, String message) {
+    public BaseRuntimeException(HttpStatus status, Integer code, String message) {
         this.status = status;
         this.code = code;
         this.message = message;
