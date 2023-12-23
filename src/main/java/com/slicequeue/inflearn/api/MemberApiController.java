@@ -44,7 +44,7 @@ public class MemberApiController {
         // 트렌젝션 시작
         memberService.update(id, request.getName());
         // 트렌젝션 끝
-        Member findMember = memberService.findOne(id); // 이후 조회 시작
+        Member findMember = memberService.findOne(id); // 이후 조회 시작 
         return new UpdateMemberResponse(findMember.getId(), findMember.getName());
 
     }
