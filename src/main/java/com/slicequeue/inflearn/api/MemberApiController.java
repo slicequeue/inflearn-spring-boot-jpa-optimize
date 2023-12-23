@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 // @Controller
 // @ResponseBody - data 자체를 바로 xml 또는 json 으로 보내자
@@ -27,6 +28,22 @@ public class MemberApiController {
         return new CreateMemberResponse(id);
     }
 
+    @PostMapping("/api/v2/members")
+    public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest request) {
+
+        Member member = new Member();
+        member.setName(request.getName());
+
+        Long id = memberService.join(member);
+        return new CreateMemberResponse(id);
+    }
+
+    @Data
+    static class CreateMemberRequest {
+
+        @NotEmpty(message = "name must not be empty.")
+        String name;
+    }
 
     @Data
     static class CreateMemberResponse {
