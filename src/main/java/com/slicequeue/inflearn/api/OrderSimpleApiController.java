@@ -24,6 +24,11 @@ public class OrderSimpleApiController {
     @GetMapping("/api/v1/simple-orders")
     public List<Order> ordersV1() {
         List<Order> all = orderRepository.findAllByString(new OrderSearch());
+        for (Order order : all) {
+            order.getMember().getName();        // Lazy 강제 초기화
+            order.getDelivery().getAddress();   // Lazy 강제 초기화
+        }
+
         return all;
         // 양방향 연관관계 문제로 인해서 이대로 하게 되면 무한 루프 형태로 문제 발생
         // -> 해결 방법으로는 1번 양방향 걸리는 곳에 `@JsonIgnore` 처리 해야함
