@@ -4,6 +4,7 @@ import com.slicequeue.inflearn.domain.Address;
 import com.slicequeue.inflearn.domain.Order;
 import com.slicequeue.inflearn.domain.OrderItem;
 import com.slicequeue.inflearn.domain.OrderStatus;
+import com.slicequeue.inflearn.repository.order.query.OrderFlatDto;
 import com.slicequeue.inflearn.repository.order.query.OrderItemQueryDto;
 import com.slicequeue.inflearn.repository.order.query.OrderQueryDto;
 import com.slicequeue.inflearn.repository.OrderRepository;
@@ -78,6 +79,10 @@ public class OrderApiController {
         return orderQueryRepository.findAllByDto_optimization();
     }
 
+    @GetMapping("/api/v6/orders")
+    public List<OrderFlatDto> ordersV6() {
+        return orderQueryRepository.findAllByDto_flat();
+    }
     @Getter
     static class OrderDto {
 
