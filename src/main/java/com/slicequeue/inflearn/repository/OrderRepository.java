@@ -76,7 +76,7 @@ public class OrderRepository {
     }
 
     public List<OrderSimpleQueryDto> findOrderDtos() {
-        // 화면에서는 최적화 되어 있지만 재사용성이 많이 떨어짐
+        // 화면에서는 최적화 되어 있지만 재사용성이 많이 떨어짐 - 이 부분은 쿼리성이므로 별도 패키지에 별도 리포로 관리하는게 좋다
         return em.createQuery("select new com.slicequeue.inflearn.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
                         " from Order o" +
                         " join o.member m" +
@@ -98,15 +98,13 @@ public class OrderRepository {
 
     public List<Order> findAllWithMemberDelivery(int offset, int limit) {
         return em.createQuery(
-                "select distinct o from Order o" + // distinct 는 실제 SQL 에서도 distinct 를 넣어줌
-                        // SQL DB 에서는 실제 모든 값이 같은 것을 중복제거함 그러나 JPA jpql 에서 distinct 를 하게 되면
-                        // 자체적으로 id 값을 기준으로 같은 것들을 제거 처리해줌! 엔티티에 중복을 걸러서 처리를 해준다는 것! <- 중요!!!
+                "select o from Order o" +
                         " join fetch o.member m" +
-                        " join fetch o.delivery d" +
-                        " join fetch o.orderItems oi" +
-                        " join fetch oi.item i", Order.class
+                        " join fetch o.delivery d"
+                        , Order.class
                 ).setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();
+        // application.yml 의 spring.jpa.hibernate.default_batch_fetch_size 를 이용하여 in 절로 1:n 연관관계 지연 로딩에 대한 처리ㅠㅠ
     }
 }

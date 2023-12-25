@@ -18,6 +18,8 @@ spring:
       hibernate:
         show-sql: true
         format_sql: false
+        default_batch_fetch_size: 100 # batch_fetch_size 기본값 지정! 1:N 관계에서 페이징시 한계 돌파 형태 N 연관관계 in 절 미리 조회해서 쟁여둠!, 단! 전체 설정!
+
 
   datasource:
     generate-unique-name: false
