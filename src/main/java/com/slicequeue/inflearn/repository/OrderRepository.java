@@ -83,4 +83,16 @@ public class OrderRepository {
                         " join o.delivery d", OrderSimpleQueryDto.class)
                 .getResultList();
     }
+
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" + // distinct 는 실제 SQL 에서도 distinct 를 넣어줌
+                        // SQL DB 에서는 실제 모든 값이 같은 것을 중복제거함 그러나 JPA jpql 에서 distinct 를 하게 되면
+                        // 자체적으로 id 값을 기준으로 같은 것들을 제거 처리해줌! 엔티티에 중복을 걸러서 처리를 해준다는 것! <- 중요!!!
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class
+        ).getResultList();
+    }
 }
