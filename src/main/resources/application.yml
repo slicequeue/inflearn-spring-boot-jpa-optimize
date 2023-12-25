@@ -11,6 +11,17 @@ spring:
     import: classpath:extra.yml
 
   jpa:
+    # open-in-view: false # 데이터베이스 커넥션 유지 관련하여 @transaction 걸려있는 서비스 메소드 이후에
+    # 컨트롤러 단에서도 컨텍스트 유지하면서 DB 커넥션 유지하는 관련 설정으로 기본 값은 true
+    # 이것은 api json 응답 처리나 view html 렌더링 하는 경우 까지 이어지게 되어 있음
+    # 효율적인 개발이 가능하게 하지만 이것은 응답 나갈때까지 DB 연결 유지가 되면서 실전에서는 성능이 중요한 실시간성 처리에서는 장애 유발 요인
+    # 따라서 다음 조건으로 OSIV(Open Session In View) open-in-view true/false 걸도록 한다.
+    # * 고객 서비스의 실시간 API 는 OSIV를 끔
+    # * ADMIN 과 같이 커넥션을 많이 사용하지 않는 곳에서는 OSIV를 킴
+    # 개발에서는 Command 와 Query 를 분리하는 형태로 개발하여 이 문제를 해결함
+    # * 조회관련 서비스, 비즈니스 로직 관련 처리 서비스 분리
+    #   * 비즈니스 & 조회관련 최대한 DTO 변환까지 마치고 메서드에서 리턴 처리
+    #   * 비즈니스 로직도 해당 서비스 메서드에 선언한 트렌젝션 내에서 처리되도록
     hibernate:
       ddl-auto: update
     generate-ddl: true
