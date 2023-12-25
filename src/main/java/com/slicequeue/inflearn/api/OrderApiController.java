@@ -1,5 +1,9 @@
 package com.slicequeue.inflearn.api;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+
 import com.slicequeue.inflearn.domain.Address;
 import com.slicequeue.inflearn.domain.Order;
 import com.slicequeue.inflearn.domain.OrderItem;
@@ -10,6 +14,7 @@ import com.slicequeue.inflearn.repository.order.query.OrderQueryDto;
 import com.slicequeue.inflearn.repository.OrderRepository;
 import com.slicequeue.inflearn.repository.OrderSearch;
 import com.slicequeue.inflearn.repository.order.query.OrderQueryRepository;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,8 +85,16 @@ public class OrderApiController {
     }
 
     @GetMapping("/api/v6/orders")
-    public List<OrderFlatDto> ordersV6() {
-        return orderQueryRepository.findAllByDto_flat();
+    public List<OrderQueryDto> ordersV6() {
+        List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
+        // 가져와서 직접 중복 되는 부분 코드로 처리하기! ㄷㄷ;;
+        return flats.stream()
+            .collect(groupingBy(o -> new OrderQueryDto(o.getOrderId(), o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                mapping(o -> new OrderItemQueryDto(o.getOrderId(), o.getItemName(), o.getOrderPrice(), o.getCount()), toList())
+            )).entrySet().stream() // 맵을 이용하여 OrderQueryDto orderId 기준으로 키값 그리고 OrderItemQueryDto toList 형으로 값 설정
+            .map(e -> new OrderQueryDto(e.getKey().getOrderId(), e.getKey().getName(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(), e.getKey().getAddress(), e.getValue()))
+            .toList(); // 이후 map 이용하여 하나의 OrderQueryDto 변형!!!
+        // 궁극의 스트림!
     }
     @Getter
     static class OrderDto {
