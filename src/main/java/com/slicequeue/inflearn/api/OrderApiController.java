@@ -4,8 +4,11 @@ import com.slicequeue.inflearn.domain.Address;
 import com.slicequeue.inflearn.domain.Order;
 import com.slicequeue.inflearn.domain.OrderItem;
 import com.slicequeue.inflearn.domain.OrderStatus;
+import com.slicequeue.inflearn.repository.order.query.OrderItemQueryDto;
+import com.slicequeue.inflearn.repository.order.query.OrderQueryDto;
 import com.slicequeue.inflearn.repository.OrderRepository;
 import com.slicequeue.inflearn.repository.OrderSearch;
+import com.slicequeue.inflearn.repository.order.query.OrderQueryRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import java.util.List;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     @GetMapping("/api/v1/orders")
     public List<Order> ordersV1() {
@@ -64,6 +68,19 @@ public class OrderApiController {
         return collect;
     }
 
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> ordersV4() {
+        List<OrderQueryDto> results = orderQueryRepository.findOrderQueryDtos();
+        results.forEach(o -> {
+            List<OrderItemQueryDto> orderItems = findOrderItems(o.getOrderId());
+            o.setOrderItems(orderItems);
+        });
+        return results;
+    }
+
+    private List<OrderItemQueryDto> findOrderItems(Long orderId) {
+        return orderQueryRepository.findOrderItems(orderId);
+    }
 
 
     @Getter
