@@ -70,18 +70,13 @@ public class OrderApiController {
 
     @GetMapping("/api/v4/orders")
     public List<OrderQueryDto> ordersV4() {
-        List<OrderQueryDto> results = orderQueryRepository.findOrderQueryDtos();
-        results.forEach(o -> {
-            List<OrderItemQueryDto> orderItems = findOrderItems(o.getOrderId());
-            o.setOrderItems(orderItems);
-        });
-        return results;
+        return orderQueryRepository.findOrderQueryDtos();
     }
 
-    private List<OrderItemQueryDto> findOrderItems(Long orderId) {
-        return orderQueryRepository.findOrderItems(orderId);
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> ordersV5() {
+        return orderQueryRepository.findAllByDto_optimization();
     }
-
 
     @Getter
     static class OrderDto {
